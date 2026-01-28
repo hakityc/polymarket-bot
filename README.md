@@ -1,30 +1,22 @@
-# Polymarket Bot
+# Polymarket $8 -> $100 Challenge Plan
 
-这是一个用于自动化管理 Polymarket 账户、执行交易策略的机器人。
+## Objectives
+- **Starting Balance**: $8.00
+- **Target Balance**: $100.00
+- **Timeframe**: Variable (Speed run)
 
-## 功能
+## Strategy: "Micro-Trend Sniper"
+- **Markets**: 15m / 1h Crypto Price Predictions (e.g., "BTC > 98k at 4pm?").
+- **Size**: Max $1.50 per bet (Risk Management is key).
+- **Entry Logic**:
+    1. **Trend**: Identify immediate 15m trend.
+    2. **Sentiment**: Search X/News for bullish/bearish spikes.
+    3. **Odds**: Look for mispricing (e.g., 60% odds on a strong momentum move).
 
-- [ ] 账户余额查询
-- [ ] 自动下单
-- [ ] 策略执行
+## Tech Stack
+- **Lang**: Node.js
+- **Data**: Web Search (Brave), Polymarket API (when keys added).
+- **Execution**: Automated limit orders (TBD) or Manual signal generation first.
 
-## ⚠️ 免责声明 (Disclaimer)
-
-本项目仅供技术研究和学习使用。
-
-**请注意：**
-1. 作者及贡献者不对使用本代码产生的任何经济损失负责。
-2. **严禁用于任何违反中国法律法规的行为。**
-3. 请遵守您所在司法管辖区的相关法律法规。
-4. 网络博彩在某些地区可能属于违法行为，请用户自行评估风险并严格自律。
-
-## 快速开始
-
-1. 克隆仓库
-2. 复制 `.env.example` 为 `.env` 并填入您的 API Key (不要提交 .env!)
-3. 运行脚本
-
-## 安全提示
-
-**切勿将您的私钥或 API Secret 上传到 GitHub！**
-本项目的 `.gitignore` 已默认忽略 `.env` 文件。
+## Logs
+- `trading/logs/`: All trade decisions recorded here.
