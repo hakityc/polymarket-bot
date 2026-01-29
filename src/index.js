@@ -1,23 +1,16 @@
-// src/index.js - Polymarket Micro-Trading Bot
-// Target: $8 -> $100
-// Strategy: 15m/1h Trend Following based on Sentiment & Tech
-
+// src/index.js - Polymarket Micro-Trading Bot (V2 Trend Follow)
 const logger = require('./utils/logger');
 const { getBalances, config } = require('./client');
-const { fetchNews, getHotTopics, analyzeSentiment } = require('./services/news');
 const { findBestMarket } = require('./services/market');
-const { executeOrder, getPositions } = require('./services/trading');
+const { executeOrder } = require('./services/trading');
 
 async function main() {
-    logger.info('🚀 Polymarket Bot 启动');
+    logger.info('🚀 Polymarket Bot (Trend Follow) 启动');
     logger.info(`目标: $${config.trading.targetBalance}`);
 
     try {
         // 1. 查询余额
-        logger.info('查询余额...');
         const balances = await getBalances();
-        logger.info(`EOA: ${balances.eoaAddress}`);
-        logger.info(`Proxy: ${balances.proxyAddress}`);
         logger.info(`Cash: $${balances.proxyUsdc.toFixed(2)} | MATIC: ${balances.matic.toFixed(4)}`);
 
         if (balances.proxyUsdc >= config.trading.targetBalance) {
@@ -25,51 +18,37 @@ async function main() {
             return;
         }
 
-        // 2. 获取新闻和热点
-        logger.info('分析市场情绪...');
-        const hotTopics = await getHotTopics();
-        logger.info(`热点: ${hotTopics.slice(0, 5).join(', ')}`);
-
-        const news = await fetchNews();
-        const sentiment = analyzeSentiment(news);
-        logger.info(`情绪评分: ${sentiment.score} (${sentiment.newsCount} 条新闻)`);
-
-        // 3. 扫描最佳标的
-        logger.info('扫描市场机会...');
-        const target = await findBestMarket(hotTopics);
-
-        if (!target) {
-            logger.warn('暂无合适标的，稍后再试');
+        if (balances.proxyUsdc < 1.0) {
+            logger.error('余额过低 (< $1)，无法交易');
             return;
         }
 
-        logger.info(`锁定: ${target.title}`);
-        logger.info(`价格: $${target.price} | 方向: ${target.outcome}`);
+        // 2. 扫描机会 (Trend Following)
+        // 这一步现在包含了 Crypto Technical Analysis
+        const target = await findBestMarket();
 
-        // 4. 执行交易 (如需自动交易，取消下面的注释)
+        if (!target) {
+            logger.info('😴 暂时空仓，等待下一个周期');
+            return;
+        }
+
+        // 3. 执行交易 (默认关闭，需手动开启)
         // const order = await executeOrder(target);
-        // if (order) {
-        //     logger.success(`交易完成: ${order.orderID}`);
-        // }
-
-        logger.success('扫描完成');
+        // if (order) logger.success(`下单成功: ${order.orderID}`);
 
     } catch (error) {
         logger.error(`运行错误: ${error.message}`);
     }
 }
 
-// 单次运行或定时循环
+// 循环模式
 if (require.main === module) {
     const args = process.argv.slice(2);
-    
     if (args.includes('--loop')) {
-        // 循环模式
         logger.info(`循环模式启动，间隔 ${config.scan.interval / 60000} 分钟`);
         main();
         setInterval(main, config.scan.interval);
     } else {
-        // 单次运行
         main();
     }
 }

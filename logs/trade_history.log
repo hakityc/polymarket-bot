@@ -1,0 +1,4 @@
+[2026-01-28T11:50:09.065Z] [INFO] Starting market scan cycle... {}
+[2026-01-28T11:50:10.351Z] [INTEL] Sentiment Score: 2 {"topics":["Bitcoin","Polymarket","Crypto"]}
+[2026-01-28T11:50:10.351Z] [TECH] Indicators: RSI=59.11, Cross=gold {}
+[2026-01-28T11:50:10.351Z] [WAIT] No confluence found (Sentiment/Tech mismatch). {}
