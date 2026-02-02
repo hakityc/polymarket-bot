@@ -32,18 +32,24 @@ async function executeOrder(market) {
         logger.info(`下单: ${size} 份 @ $${buyPrice.toFixed(4)}`);
 
         // 获取客户端并下单
-        const client = getClient();
-        const order = await client.createOrder({
+        const client = await getClient();
+        const signedOrder = await client.createOrder({
             tokenID: market.assetId,
             price: buyPrice,
             side: 'BUY',
             size: size,
             feeRateBps: 0,
-            nonce: Date.now(),
         });
 
-        logger.success(`交易成功! Order ID: ${order.orderID}`);
-        return order;
+        // 提交订单到 CLOB
+        const response = await client.postOrder(signedOrder);
+
+        if (response && response.success) {
+            logger.success(`交易成功! Order ID: ${response.orderID}`);
+            return response;
+        } else {
+            throw new Error(response.errorMsg || '订单提交失败');
+        }
 
     } catch (e) {
         logger.error(`交易失败: ${e.message}`);

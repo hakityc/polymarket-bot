@@ -44,11 +44,15 @@ function getWallet() {
 /**
  * 获取 CLOB 客户端
  */
-function getClient() {
+async function getClient() {
     if (!_client) {
         const wallet = getWallet();
         const creds = config.credentials;
+        const proxyAddr = await getProxyAddress();
         
+        // Polymarket 默认使用 SignatureType.POLY_PROXY (1) 来通过代理钱包交易
+        const { SignatureType } = require('@polymarket/order-utils');
+
         _client = new ClobClient(
             config.HOST,
             config.CHAIN_ID,
@@ -57,7 +61,9 @@ function getClient() {
                 key: creds.apiKey,
                 secret: creds.apiSecret,
                 passphrase: creds.apiPassphrase,
-            } : undefined
+            } : undefined,
+            SignatureType.POLY_PROXY,
+            proxyAddr
         );
     }
     return _client;

@@ -26,6 +26,8 @@ module.exports = {
         interval: 15 * 60 * 1000,  // 15 分钟
         newsLimit: 10,
         marketLimit: 100,
+        // 关注的核心关键词
+        keywords: ['Bitcoin', 'Ethereum', 'Trump', 'Kraken', 'Macron', 'MicroStrategy', 'NVIDIA'],
     },
 
     // 凭据 (从环境变量读取)

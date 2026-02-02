@@ -32,9 +32,9 @@ async function main() {
             return;
         }
 
-        // 3. 执行交易 (默认关闭，需手动开启)
-        // const order = await executeOrder(target);
-        // if (order) logger.success(`下单成功: ${order.orderID}`);
+        // 3. 执行交易
+        const order = await executeOrder(target);
+        if (order) logger.success(`下单成功: ${order.orderID}`);
 
     } catch (error) {
         logger.error(`运行错误: ${error.message}`);
